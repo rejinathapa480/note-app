@@ -1,14 +1,14 @@
-import NoteContainer from "../Notes/NoteContanier"
-import SideBar from "../sidebar/SidBar"
+import Note from "../SectionComponent/Note";
+import SideBar from "../SidebarComponent/SideBar";
 
 const Home = () => {
-    return(
-        <>
-        <div className="flex">
-            <SideBar/>
-            <NoteContainer/>
-        </div>
-        </>
-    )
-}
-export default Home
+  return (
+    <>
+      <div className="flex justify-between ">
+        <SideBar />
+        <Note />
+      </div>
+    </>
+  );
+};
+export default Home;

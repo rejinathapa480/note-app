@@ -4,7 +4,6 @@ import Home from "../Pages/Home";
 const AppLayout = () =>{
     return(
         <>
-        <Home/>
         <Outlet/>
         </>
     )
