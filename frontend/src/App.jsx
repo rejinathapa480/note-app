@@ -1,35 +1,29 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+import { Routes, Route, Navigate } from "react-router-dom";
+import SignUP from "./Pages/SignUp";
+import AuthLayout from "./Layout.jsx/AuthLayout";
+import AppLayout from "./Layout.jsx/AppLayout";
+import Home from "./Pages/Home";
+import Login from "./Pages/Login";
+import useAuthStore from "./authStore/useAuthStore";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+function App() { 
+  const {isLoggedIn} = useAuthStore();
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <ToastContainer />
+      <Routes>
+        <Route  element={isLoggedIn ? <Navigate to={'/'}/> : (<AuthLayout />)}>
+          <Route path="login"  element={<Login/>}/>
+          <Route path="signup" element={<SignUP/>} />
+        </Route>
+        <Route path="/" element={isLoggedIn ? (<AppLayout/>) : <Navigate to={'login'}/>}>
+           <Route index element={<Home/>}/>
+        </Route>
+      </Routes>
     </>
-  )
+  );
 }
+export default App;
 
-export default App
