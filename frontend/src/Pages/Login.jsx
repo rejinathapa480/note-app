@@ -45,8 +45,9 @@ const Login = () => {
   };
   return (
     <>
+    <div className="bg-[#F2F4F7] h-screen">
       <form className="flex justify-center items-center" onSubmit={handleLogin}>
-        <div className="flex flex-col sm:w-[50%]  md:w-[40%]  gap-6  bg-[#F9FAFB]  shadow-lg border border-gray-300 my-20 px-10 py-10 ">
+        <div className="flex flex-col sm:w-[50%]  md:w-[40%]  gap-6  bg-[#FFFFFF]  shadow-lg border border-gray-300 my-20 px-10 py-10 ">
           <h1 className="text-2xl font-semibold text-center py-5">Log In</h1>
           <input
             type="text"
@@ -76,6 +77,7 @@ const Login = () => {
           </div>
         </div>
       </form>
+    </div>
     </>
   );
 };

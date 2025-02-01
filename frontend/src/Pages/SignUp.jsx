@@ -10,9 +10,9 @@ const SignUP = () => {
   const [password, setPassword] = useState("");
 
 
-  const {signUp} = useAuthStore();
-  const {isSignUp} = useAuthStore()
-  const navigate = useNavigate();
+ const {logInUser} = useAuthStore();
+ const {isLoggedIn} = useAuthStore();
+
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,9 +26,10 @@ const SignUP = () => {
         }
       );
       const result = response.data;
-      signUp(result?.data?.accessToken);
+      logInUser(result?.data?.accessToken);
       toast.success(result?.message);
-      if(isSignUp){
+
+      if(isLoggedIn){
         navigate('/')
       }
 

@@ -16,22 +16,10 @@ const useAuthStore = create(
         set({ isLoggedIn: false, accessToken: "" });
         localStorage.clear();
       },
-      isSignUp: false,
-      accessToken: "",
-      signUp: (token) =>{
-        set({
-          isSignUp: true,
-          accessToken: token,
-        })
-      },
-      signOut: () => {
-        set({isSignUp: false, accessToken:""})
-         localStorage.clear();
-      }
+
     }),
     {
       name: "userLoginStatus",
-      singup: "userSignUpStatus",
     }
   )
 );
