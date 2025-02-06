@@ -8,22 +8,25 @@ import Home from "./Pages/Home";
 import Login from "./Pages/Login";
 import useAuthStore from "./authStore/useAuthStore";
 
-function App() { 
-  const {isLoggedIn} = useAuthStore();
+function App() {
+  const { isLoggedIn } = useAuthStore();
   return (
     <>
       <ToastContainer />
       <Routes>
-        <Route  element={isLoggedIn ? <Navigate to={'/'}/> : (<AuthLayout />)}>
-          <Route path="login"  element={<Login/>}/>
-          <Route path="signup" element={<SignUP/>} />
+        <Route element={isLoggedIn ? <Navigate to={"/"} /> : <AuthLayout />}>
+          <Route path="login" element={<Login />} />
+          <Route path="signup" element={<SignUP />} />
         </Route>
-        <Route path="/" element={isLoggedIn ? (<AppLayout/>) : <Navigate to={'login'}/>}>
-           <Route index element={<Home/>}/>
+        <Route
+          path="/"
+          element={isLoggedIn ? <AppLayout /> : <Navigate to={"login"} />}
+        >
+          <Route index element={<Home />} />
         </Route>
+     
       </Routes>
     </>
   );
 }
 export default App;
-

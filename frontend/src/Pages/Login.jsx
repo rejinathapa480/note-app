@@ -29,8 +29,6 @@ const Login = () => {
       );
 
       const result = response.data;
-      console.log("result is", result);
-
       toast.success(result?.message);
       logInUser(result?.data?.accessToken)
     

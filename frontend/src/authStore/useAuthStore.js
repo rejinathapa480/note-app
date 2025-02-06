@@ -5,6 +5,7 @@ const useAuthStore = create(
     (set) => ({
       isLoggedIn: false,
       accessToken: "",
+      riya: "riya",
       logInUser: (token) => {
         set({
           isLoggedIn: true,

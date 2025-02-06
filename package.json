@@ -1,5 +1,0 @@
-{
-  "dependencies": {
-    "zustand-persist": "^0.4.0"
-  }
-}

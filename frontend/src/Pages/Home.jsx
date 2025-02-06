@@ -1,13 +1,9 @@
-import Note from "../SectionComponent/Note";
-import SideBar from "../SidebarComponent/SideBar";
+import Note from "../Component/Note";
 
 const Home = () => {
   return (
     <>
-      <div className="flex justify-between ">
-        <SideBar />
-        <Note />
-      </div>
+      <Note />
     </>
   );
 };

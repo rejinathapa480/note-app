@@ -2,7 +2,7 @@ const Note = require("../models/note.model");
 
 const getAllNotes = async (req, res) => {
   try {
-    const notes = await Note.find({ user: req.user._id }).select("-user");
+    const notes = await Note.find({ user: req.user._id }).select("-user").sort({ updatedAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -81,9 +81,10 @@ const deleteNote = async (req, res) => {
 
 const updateNote = async (req, res) => {
   try {
-    const { noteId, color, newNote } = req.body;
+    const {id} = req.params
+    const { newNote, color } = req.body;
 
-    const note = await Note.findById(noteId);
+    const note = await Note.findByIdAndUpdate(id,{newNote, color});
 
     if (!note) {
       return res.status(404).json({
