@@ -16,6 +16,12 @@ const SignUP = () => {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const regex = /^[a-zA-Z0-9._%+-]+@gmail\.[a-zA-Z]{2,7}$/;
+
+    if(!regex.test(email)){
+      toast.error("please enter a valid email address");
+      return
+    }
     try {
       const response = await axios.post(
         "http://localhost:5001/api/auth/signUp",

@@ -7,15 +7,19 @@ import { MdEditNote } from "react-icons/md";
 import { MdDeleteSweep } from "react-icons/md";
 import { MdOutlineSaveAlt } from "react-icons/md";
 import { IoColorPalette } from "react-icons/io5";
+import { CiSquarePlus } from "react-icons/ci";
+import EditingNote from "./EditingNote";
 
 const Note = () => {
   const [notes, setNotes] = useState(null);
   const [input, setInput] = useState("");
   const [updateId, setUpdateId] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const [newNote, setNewNote] = useState("");
-  const [color,setColor] = useState("#FFFFFF");
-  const [updateColor,setUpdateColor] = useState("#FFFFFF")
-
+  const [color, setColor] = useState("#FFFFFF");
+  const [updateColor, setUpdateColor] = useState("#FFFFFF");
+  const [showConform, setShowConform] = useState(false);
+  const [deleteId, setDeletId] = useState(null);
 
   const { accessToken } = useAuthStore();
 
@@ -40,7 +44,7 @@ const Note = () => {
         "http://localhost:5001/api/note/create",
         {
           note: input,
-          color
+          color: color,
         },
         {
           headers: {
@@ -50,11 +54,11 @@ const Note = () => {
       );
       setInput("");
       toast.success(response?.data?.message);
-      console.log("response is:", response);
     } catch (error) {
       toast?.error(error?.response?.data?.message);
     } finally {
       fetchNote();
+      setColor("#FFFFFF");
     }
   };
 
@@ -77,11 +81,13 @@ const Note = () => {
     }
   };
 
-  const handleUpdate = async (e) => {
-    e.preventDefault()
+  const handleUpdate = async (id, e) => {
+    e.preventDefault();
+    setUpdateId(id);
+    setIsEditing(true);
     try {
       const response = await axios.patch(
-        `http://localhost:5001/api/note/update/${updateId}`,
+        `http://localhost:5001/api/note/update/${id}`,
         {
           newNote: newNote,
           color: updateColor,
@@ -92,25 +98,24 @@ const Note = () => {
           },
         }
       );
-      toast.success( response?.data?.message);
+      setNewNote(response);
     } catch (error) {
       toast.error(error?.response?.data?.message);
     } finally {
       fetchNote();
       setNewNote("");
-      setUpdateId(null);
-      setUpdateColor("#FFFFFF")
+      setUpdateColor("#FFFFFF");
     }
   };
 
   return (
     <>
       <form
-        onSubmit={handleAdd}
-        className="flex gap-7 justify-center items-center  "
+        onSubmit={(e) => handleAdd(e)}
+        className="flex gap-2  sm:gap-5 justify-center items-center py-5 "
       >
         <input
-          className=" border border-gray-200 shadow-sm rounded-sm  px-5 py-2 w-[40%] outline-none"
+          className=" border border-gray-200 shadow-sm rounded-sm  px-5 py-2 sm:w-[40%] outline-none"
           type="text"
           placeholder="write  notes here... "
           onChange={(e) => setInput(e.target.value)}
@@ -118,57 +123,116 @@ const Note = () => {
         />
         <button
           type="submit"
-          className="px-5 py-2 bg-blue-500 rounded-sm  text-white"
+          className="px-5 py-2 bg-blue-500 rounded-sm  text-white max-sm:hidden"
         >
           Add Note
         </button>
-        <input type="color" value={color} onChange={(e)=>setColor(e.target.value)} />
+        <button type="submit" className="sm:hidden">
+          <CiSquarePlus className="text-3xl" />
+        </button>
+        <input
+          type="color"
+          value={color}
+          onChange={(e) => setColor(e.target.value)}
+          className="w-10"
+        />
       </form>
 
-      <div className="px-10 py-18 grid grid-cols-3 gap-5 ">
+      <div className="px-10 py-5 md:grid md:grid-cols-3  md:items-start md:auto-rows-min sm:grid sm:grid-cols-2 gap-5 flex flex-col  ">
         {notes?.data?.map((note, index) => (
           <div
             key={index}
-            style={{"backgroundColor":note?.color}}
-            className="border-gray-200 border  shadow-md rounded-md  px-7 py-3  flex flex-col gap-5 "
+            style={{ backgroundColor: note?.color }}
+            className="border-gray-200 border  shadow-md rounded-md  px-7 py-3  flex flex-col justify-between gap-5 h-[30vh]   "
           >
             <div>
-              <p className=" ">{note?.note}</p>
+              <p className="text-sm">{note?.note}</p>
             </div>
             <div className="flex justify-end gap-10">
-              <button onClick={() => handleDelete(note?._id)} className="">
-                <MdDeleteSweep className="text-xl" />
-              </button>
               <button
                 onClick={() => {
-                  setUpdateId(note._id);
+                  setDeletId(note?._id);
+                  setShowConform(() => true);
+                }}
+                className=""
+              >
+                <MdDeleteSweep className="text-xl text-red-400" />
+              </button>
+              <div className="relative ">
+                {showConform && (
+                  <div className="bg-white p-5 rounded-sm w-md h-32 shadow-2xl absolute top-0  ">
+                    <h1 className="text-sm py-2">
+                      Are You Sure You Want to Delete your note?
+                    </h1>
+                    <div className="flex gap-5">
+                      <button
+                        onClick={() => handleDelete(note?._id)}
+                        className=" px-4 bg-blue-700 rounded-sm text-white"
+                      >
+                        yes
+                      </button>
+                      <button
+                        onClick={() => setShowConform(false)}
+                        className="py-1 px-4 bg-blue-700 rounded-sm text-white"
+                      >
+                        No
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <button
+                onClick={(e) => {
+                  handleUpdate(note?._id, e);
                 }}
               >
                 <MdEditNote className="text-xl" />
               </button>
             </div>
-            {updateId === note._id && (
+            <EditingNote
+              setUpdateId={setUpdateId}
+              isEditing={isEditing}
+              setIsEditing={setIsEditing}
+              newNote={newNote}
+              setNewNote={setNewNote}
+              updateColor={updateColor}
+              setUpdateColor={setUpdateColor}
+              fetchNote={fetchNote}
+              handleUpdate={handleUpdate}
+              updateId={updateId}
+              note={note}
+            />
+
+            {/* {isEditing && updateId === note?._id && (
               <>
                 <form
-                  onSubmit={handleUpdate}
-                  className="flex justify-center items-center gap-5 py-5"
+                  onSubmit={(e) => {
+                    handleUpdate(note?._id, e);
+                    setUpdateId(null);
+                  }}
+                  className="flex justify-center items-center gap-5 "
                 >
                   <input
                     className="border border-gray-200 shadow-sm rounded-sm  px-5 py-2 w-[40%] outline-none"
                     type="text"
-                    onChange={(e) => setNewNote(e.target.value)}
+                    onChange={(e) => {
+                      setNewNote(e.target.value);
+                    }}
                     value={newNote}
                   />
                   <button type="submit">
                     <MdOutlineSaveAlt className="text-2xl" />
                   </button>
-                  <input type="color" value={updateColor} onChange={(e)=> {
-                    setUpdateColor(e.target.value)
-                  }
-                  } />
+                  <input
+                    type="color"
+                    value={updateColor}
+                    onChange={(e) => {
+                      setUpdateColor(e.target.value);
+                    }}
+                  />
                 </form>
               </>
-            )}
+            )} */}
           </div>
         ))}
       </div>
